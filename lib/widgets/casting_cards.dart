@@ -1,24 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:peliculas_app/models/models.dart';
+import 'package:peliculas_app/providers/movies_provider.dart';
+import 'package:provider/provider.dart';
 
 class CastingCards extends StatelessWidget {
-  const CastingCards({Key? key}) : super(key: key);
+
+  final int movieId;
+  const CastingCards({Key? key, required this.movieId}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 30),
-      width: double.infinity,
-      height: 185,      
-      child: ListView.builder(
-        itemCount: 10,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) => _CastCard(),
-      ),
+
+    final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
+
+    return FutureBuilder<List<Cast>>(
+      future: moviesProvider.getMovieCast(movieId),
+      builder: (context, snapshot) {
+
+        if(!snapshot.hasData) {
+          return const SizedBox(
+            height: 180,
+            child: Center(
+              child: CircularProgressIndicator()
+            ),
+          );
+        }
+        return Container(
+          margin: const EdgeInsets.only(bottom: 30),
+          width: double.infinity,
+          height: 185,      
+          child: ListView.builder(
+            itemCount: 10,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => _CastCard(movieCast: snapshot.data![index],),
+          ),
+        );
+      },
     );
   }
 }
 
 class _CastCard extends StatelessWidget {
+
+  final Cast movieCast;
+
+  const _CastCard({super.key, required this.movieCast});
   
   @override
   Widget build(BuildContext context) {
@@ -30,9 +56,9 @@ class _CastCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: const FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'), 
-              image: NetworkImage('https://via.placeholder.com/150x300'),
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/no-image.jpg'), 
+              image: NetworkImage(movieCast.fullProfilePath),
               height: 140,
               width: 100,
               fit: BoxFit.cover,
@@ -42,7 +68,7 @@ class _CastCard extends StatelessWidget {
           const SizedBox(height: 5,),
 
           Text(
-            'actor.name Prueba de Nomber',
+            movieCast.name,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             textAlign: TextAlign.center,

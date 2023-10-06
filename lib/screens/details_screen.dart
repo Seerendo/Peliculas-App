@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peliculas_app/models/models.dart';
 import 'package:peliculas_app/widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -7,18 +8,20 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final String movie = ModalRoute.of(context)?.settings.arguments.toString() ?? 'no-movie';
+
+    //Recibe los arguments de la ruta padre como Movie
+    final Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _CustomAppBar(),
+          _CustomAppBar(movie: movie,),
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                _PostAndTitle(),
-                _Overview(),
-                const CastingCards(),
+                _PostAndTitle(movie: movie,),
+                _Overview(movie: movie,),
+                const CastingCards(movieId: 980489),
               ]
             )
           )
@@ -29,6 +32,10 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget {
+
+  final Movie movie;
+
+  const _CustomAppBar({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +52,15 @@ class _CustomAppBar extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
-            'movie.title',
+            movie.title,
             style: const TextStyle(
               fontSize: 16
             ),
           ),
         ),
-        background: const FadeInImage(
-          placeholder: AssetImage('assets/loading.gif'),
-          image: NetworkImage('https://via.placeholder.com/300x400'),
+        background: FadeInImage(
+          placeholder: const AssetImage('assets/loading.gif'),
+          image: NetworkImage(movie.fullBackdropImg),
           fit: BoxFit.cover
         ),
       ),
@@ -63,10 +70,13 @@ class _CustomAppBar extends StatelessWidget {
 
 class _PostAndTitle extends StatelessWidget {
 
+  final Movie movie;
+
+  const _PostAndTitle({super.key, required this.movie});
   
   @override
   Widget build(BuildContext context) {
-  final TextTheme textTheme = Theme.of(context).textTheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Container(
       margin: const EdgeInsets.only(top: 20),
@@ -75,45 +85,47 @@ class _PostAndTitle extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: const FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'),
-              image: NetworkImage('https://via.placeholder.com/200x300'),
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/no-image.jpg'),
+              image: NetworkImage(movie.fullPosterImg),
               height: 150,
             ),
           ),
 
           const SizedBox(width: 20,),
 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'movie.title',
-                style: textTheme.headlineSmall,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              Text(
-                'original.title',
-                style: textTheme.titleMedium,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.star_outline,
-                    size: 15,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 5,),
-                  Text(
-                    'movie.voteAcerage',
-                    style: textTheme.bodySmall,
-                  )
-                ],
-              )
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  movie.title,
+                  style: textTheme.headlineSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Text(
+                  movie.originalTitle,
+                  style: textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star_outline,
+                      size: 15,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 5,),
+                    Text(
+                      movie.voteAverage.toString(),
+                      style: textTheme.bodySmall,
+                    )
+                  ],
+                )
+              ],
+            ),
           )
         ],
       ),
@@ -122,13 +134,17 @@ class _PostAndTitle extends StatelessWidget {
 }
 
 class _Overview extends StatelessWidget {
+
+  final Movie movie;
+
+  const _Overview({super.key, required this.movie});
   
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
       child: Text(
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
+        movie.overview,
         textAlign: TextAlign.justify,
         style: Theme.of(context).textTheme.titleMedium,
       ),
