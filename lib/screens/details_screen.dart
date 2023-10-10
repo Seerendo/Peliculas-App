@@ -5,26 +5,27 @@ import 'package:peliculas_app/widgets/widgets.dart';
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-
     //Recibe los arguments de la ruta padre como Movie
     final Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _CustomAppBar(movie: movie,),
+          _CustomAppBar(
+            movie: movie,
+          ),
           SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                _PostAndTitle(movie: movie,),
-                _Overview(movie: movie,),
-                const CastingCards(movieId: 980489),
-              ]
-            )
-          )
+              delegate: SliverChildListDelegate([
+            _PostAndTitle(
+              movie: movie,
+            ),
+            _Overview(
+              movie: movie,
+            ),
+            CastingCards(movieId: movie.id),
+          ]))
         ],
       ),
     );
@@ -32,10 +33,9 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget {
-
   final Movie movie;
 
-  const _CustomAppBar({super.key, required this.movie});
+  const _CustomAppBar({required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -53,27 +53,24 @@ class _CustomAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
             movie.title,
-            style: const TextStyle(
-              fontSize: 16
-            ),
+            style: const TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
           ),
         ),
         background: FadeInImage(
-          placeholder: const AssetImage('assets/loading.gif'),
-          image: NetworkImage(movie.fullBackdropImg),
-          fit: BoxFit.cover
-        ),
+            placeholder: const AssetImage('assets/loading.gif'),
+            image: NetworkImage(movie.fullBackdropImg),
+            fit: BoxFit.cover),
       ),
     );
   }
 }
 
 class _PostAndTitle extends StatelessWidget {
-
   final Movie movie;
 
-  const _PostAndTitle({super.key, required this.movie});
-  
+  const _PostAndTitle({required this.movie});
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -83,17 +80,20 @@ class _PostAndTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: FadeInImage(
-              placeholder: const AssetImage('assets/no-image.jpg'),
-              image: NetworkImage(movie.fullPosterImg),
-              height: 150,
+          Hero(
+            tag: movie.heroId!,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                placeholder: const AssetImage('assets/no-image.jpg'),
+                image: NetworkImage(movie.fullPosterImg),
+                height: 150,
+              ),
             ),
           ),
-
-          const SizedBox(width: 20,),
-
+          const SizedBox(
+            width: 20,
+          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,9 @@ class _PostAndTitle extends StatelessWidget {
                       size: 15,
                       color: Colors.grey,
                     ),
-                    const SizedBox(width: 5,),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Text(
                       movie.voteAverage.toString(),
                       style: textTheme.bodySmall,
@@ -134,11 +136,10 @@ class _PostAndTitle extends StatelessWidget {
 }
 
 class _Overview extends StatelessWidget {
-
   final Movie movie;
 
-  const _Overview({super.key, required this.movie});
-  
+  const _Overview({required this.movie});
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,19 +1,15 @@
-# peliculas_app
+# Peliculas_App
 
-A new Flutter project created with FlutLab - https://flutlab.io
+Aplicación de películas con SearchDelegate y Debouncer.
 
-## Getting Started
+## Resources
 
-A few resources to get you started if this is your first Flutter project:
+- API Movie: https://www.themoviedb.org
+- Debouncer: https://stackoverflow.com/a/52922130/7834829
+- Flutter Version: 3.10
 
-- https://flutter.dev/docs/get-started/codelab
-- https://flutter.dev/docs/cookbook
+## Libraries
 
-For help getting started with Flutter, view our
-https://flutter.dev/docs, which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-## Getting Started: FlutLab - Flutter Online IDE
-
-- How to use FlutLab? Please, view our https://flutlab.io/docs
-- Join the discussion and conversation on https://flutlab.io/residents
+- card_swiper: ^3.0.1
+- http: ^0.13.5
+- provider: ^6.0.5
